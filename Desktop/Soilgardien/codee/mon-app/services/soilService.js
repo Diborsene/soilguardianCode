@@ -23,23 +23,45 @@ class SoilService {
   }
 
   /**
-   * Analyser le sol pour une position
+   * Analyser le sol pour une position avec retry automatique
    */
-  async analyzeSoil(latitude, longitude, radius = 10) {
-    try {
-      console.log(`🌱 Analyse de sol pour: ${latitude}, ${longitude}`);
-      
-      const response = await api.post('/soil/analyze', {
-        latitude,
-        longitude,
-        radius
-      });
+  async analyzeSoil(latitude, longitude, radius = 10, retries = 2) {
+    let lastError = null;
 
-      return response.data;
-    } catch (error) {
-      console.error('❌ Erreur lors de l\'analyse:', error.response?.data || error.message);
-      throw error.response?.data || { message: 'Erreur réseau' };
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await api.post('/soil/analyze', {
+          latitude,
+          longitude,
+          radius
+        });
+
+        return response.data;
+      } catch (error) {
+        lastError = error;
+        const errorData = error.response?.data;
+
+        // Si c'est une erreur 404 (pas de données trouvées) et qu'il reste des tentatives
+        if (error.response?.status === 404 && attempt < retries) {
+          // Attendre 2 secondes avant de réessayer
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          continue;
+        }
+
+        // Pour les autres erreurs ou la dernière tentative, on lance l'erreur
+        console.error('❌ Erreur lors de l\'analyse:', errorData || error.message);
+        throw errorData || {
+          success: false,
+          message: 'Erreur réseau. Vérifiez votre connexion.'
+        };
+      }
     }
+
+    // Si on arrive ici, toutes les tentatives ont échoué
+    throw lastError.response?.data || {
+      success: false,
+      message: 'Impossible de récupérer les données après plusieurs tentatives.'
+    };
   }
 
   /**

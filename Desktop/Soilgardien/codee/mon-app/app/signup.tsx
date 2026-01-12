@@ -65,13 +65,12 @@ export default function SignupScreen() {
 
     setLoading(true);
     try {
-      const result = await authService.register(formData);
-      console.log('✅ Inscription réussie:', result);
+      await authService.register(formData);
 
-      Alert.alert('Succès', 'Inscription réussie !', [
+      Alert.alert('Succès', 'Inscription réussie ! Vous pouvez maintenant vous connecter.', [
         {
           text: 'OK',
-          onPress: () => router.replace('/(tabs)'),
+          onPress: () => router.replace('/login'),
         },
       ]);
     } catch (error: any) {

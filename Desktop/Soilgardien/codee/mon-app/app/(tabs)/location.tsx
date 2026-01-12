@@ -246,13 +246,13 @@ export default function LocationAndParcelScreen() {
 
     setLoading(true);
     try {
-      // Appel à l'API d'analyse
+      // Appel à l'API d'analyse (avec retry automatique)
       const result = await soilService.analyzeSoil(
         analyzingLocation.latitude,
         analyzingLocation.longitude,
         10 // rayon de recherche en km
       );
-      
+
       if (result.success) {
         // Préparer les données à passer à la page d'analyse
         const analysisData = {
@@ -270,24 +270,29 @@ export default function LocationAndParcelScreen() {
             }
           }
         };
-        
+
         // Navigation vers la page d'analyse avec les données
         router.push({
           pathname: '/(tabs)/analyse',
-          params: { 
+          params: {
             data: JSON.stringify(analysisData)
           }
         });
       } else {
         Alert.alert('Erreur', result.message || 'Analyse impossible');
       }
-      
+
     } catch (error: any) {
       console.error('❌ Erreur:', error);
-      Alert.alert(
-        'Erreur', 
-        error.message || 'Impossible de réaliser l\'analyse. Vérifiez votre connexion.'
-      );
+
+      // Message plus convivial pour l'erreur 404
+      let errorMessage = error.message || 'Impossible de réaliser l\'analyse. Vérifiez votre connexion.';
+
+      if (errorMessage.includes('404') || errorMessage.includes('Aucune donnée')) {
+        errorMessage = 'Aucune donnée de sol disponible dans cette zone pour le moment. Veuillez réessayer dans quelques instants ou choisir une autre localisation.';
+      }
+
+      Alert.alert('Information', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -501,7 +506,7 @@ export default function LocationAndParcelScreen() {
         </View>
 
         {/* Launch Analysis Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.launchButton, loading && styles.launchButtonDisabled]}
           onPress={handleAnalyze}
           disabled={loading}
@@ -509,7 +514,7 @@ export default function LocationAndParcelScreen() {
           {loading ? (
             <>
               <ActivityIndicator color="#fff" />
-              <Text style={styles.launchButtonText}>Analyse en cours...</Text>
+              <Text style={styles.launchButtonText}>Récupération des données en cours...</Text>
             </>
           ) : (
             <>

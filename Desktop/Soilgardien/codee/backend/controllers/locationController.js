@@ -34,8 +34,6 @@ exports.reverseGeocode = async (req, res) => {
       });
     }
 
-    console.log(`🌍 Recherche de localisation pour: ${latitude}, ${longitude}`);
-
     // Effectuer le reverse geocoding
     const results = await geocoder.reverse({ lat: latitude, lon: longitude });
 
@@ -96,8 +94,6 @@ exports.geocode = async (req, res) => {
         message: 'L\'adresse est requise'
       });
     }
-
-    console.log(`📍 Recherche de coordonnées pour: ${adresse}`);
 
     const results = await geocoder.geocode(adresse);
 

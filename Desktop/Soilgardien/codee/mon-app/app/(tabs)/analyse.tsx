@@ -25,7 +25,6 @@ export default function AnalyseScreen() {
       if (params.data) {
         try {
           const data = JSON.parse(params.data);
-          console.log('📊 Données d\'analyse:', data);
           setAnalysisData(data);
 
           // Récupérer le type d'utilisateur depuis les données

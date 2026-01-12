@@ -57,7 +57,6 @@ export default function LocationAndParcelScreen() {
         const user = await authService.getUser();
         if (user && user.type_utilisateur) {
           setUserType(user.type_utilisateur);
-          console.log('👤 Type utilisateur:', user.type_utilisateur);
         }
       } catch (error) {
         console.error('Erreur lors de la récupération du type utilisateur:', error);
@@ -247,16 +246,12 @@ export default function LocationAndParcelScreen() {
 
     setLoading(true);
     try {
-      console.log('🌱 Lancement de l\'analyse...');
-      
       // Appel à l'API d'analyse
       const result = await soilService.analyzeSoil(
         analyzingLocation.latitude,
         analyzingLocation.longitude,
         10 // rayon de recherche en km
       );
-      
-      console.log('✅ Analyse reçue:', result);
       
       if (result.success) {
         // Préparer les données à passer à la page d'analyse
@@ -775,9 +770,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     borderRadius: 8,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   picker: {
-    height: 50,
+    height: Platform.OS === 'ios' ? 180 : 50,
+    width: '100%',
   },
   input: {
     backgroundColor: '#f5f5f5',

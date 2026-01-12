@@ -15,9 +15,6 @@ class ReportService {
    */
   async generateReport(analysisData) {
     try {
-      console.log('📄 Génération du rapport PDF...');
-      console.log('📤 Données envoyées:', JSON.stringify(analysisData, null, 2));
-
       // Appeler l'API backend avec arraybuffer (compatible React Native)
       const response = await api.post(
         '/reports/generate-agriculture',
@@ -32,16 +29,10 @@ class ReportService {
         }
       );
 
-      console.log('✅ Réponse reçue du serveur');
-      console.log('📦 Type de réponse:', typeof response.data);
-      console.log('📦 Taille des données:', response.data.byteLength, 'bytes');
-
       // Nom du fichier
       const timestamp = new Date().getTime();
       const fileName = `Rapport_Sol_${timestamp}.pdf`;
       const fileUri = `${FileSystem.documentDirectory}${fileName}`;
-
-      console.log('💾 Enregistrement du PDF dans:', fileUri);
 
       // Convertir ArrayBuffer en base64
       const arrayBuffer = response.data;
@@ -52,14 +43,10 @@ class ReportService {
       }
       const base64data = btoa(binary);
 
-      console.log('🔄 Conversion en base64 terminée, taille:', base64data.length);
-
       // Écrire le fichier sur le téléphone
       await FileSystem.writeAsStringAsync(fileUri, base64data, {
         encoding: FileSystem.EncodingType.Base64,
       });
-
-      console.log('✅ PDF enregistré avec succès!');
 
       // Ne pas partager automatiquement - le partage se fera depuis la page rapport
       return {
@@ -106,8 +93,6 @@ class ReportService {
           dialogTitle: 'Rapport d\'analyse de sol',
           UTI: 'com.adobe.pdf'
         });
-
-        console.log('📤 Rapport partagé');
 
       } else {
         // Fallback pour Android : copier dans Downloads

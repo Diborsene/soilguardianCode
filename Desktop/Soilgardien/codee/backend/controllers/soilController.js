@@ -23,8 +23,6 @@ exports.findNearestSoil = async (req, res) => {
       });
     }
 
-    console.log(`🔍 Recherche de sols proches de: ${latitude}, ${longitude} (rayon: ${radius}km)`);
-
     const [results] = await db.sequelize.query(`
       SELECT *,
         (6371 * acos(
@@ -52,8 +50,6 @@ exports.findNearestSoil = async (req, res) => {
         suggestion: 'Essayez d\'augmenter le rayon de recherche'
       });
     }
-
-    console.log(`✅ ${results.length} échantillon(s) trouvé(s)`);
 
     res.status(200).json({
       success: true,
@@ -99,8 +95,6 @@ exports.analyzeSoilAtLocation = async (req, res) => {
       });
     }
 
-    console.log(`🌱 Analyse de sol pour: ${latitude}, ${longitude}`);
-
     const [results] = await db.sequelize.query(`
       SELECT *,
         (6371 * acos(
@@ -130,18 +124,6 @@ exports.analyzeSoilAtLocation = async (req, res) => {
     const nearestSoil = results[0];
     const distance = parseFloat(nearestSoil.distance);
 
-    console.log(`📍 Sol trouvé à ${distance.toFixed(2)} km`);
-    console.log('🔍 Données brutes:', {
-      ph: nearestSoil.ph,
-      ce: nearestSoil.ce,
-      phosphore: nearestSoil.phosphore,
-      potassium: nearestSoil.potassium,
-      matiere_organique: nearestSoil.matiere_organique,
-      sable: nearestSoil.sable,
-      limon: nearestSoil.limon,
-      argile: nearestSoil.argile
-    });
-
     // ✅ ADAPTER les données pour le service d'analyse
     const adaptedData = {
       ph: nearestSoil.ph,
@@ -156,8 +138,6 @@ exports.analyzeSoilAtLocation = async (req, res) => {
       silt_percent: nearestSoil.limon,
       clay_percent: nearestSoil.argile
     };
-
-    console.log('🔄 Données adaptées pour analyse:', adaptedData);
 
     // Effectuer l'analyse complète
     const analysis = soilAnalysisService.performCompleteAnalysis(adaptedData);

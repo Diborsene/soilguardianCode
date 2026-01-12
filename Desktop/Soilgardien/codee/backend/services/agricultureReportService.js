@@ -27,8 +27,6 @@ class AgricultureReportService {
    */
   async generateReport(analysisData) {
     try {
-      console.log('📄 Génération rapport agricole...');
-
       const fileName = `rapport_analyse_sol_${Date.now()}.pdf`;
       const filePath = path.join(__dirname, '../../temp', fileName);
 
@@ -65,8 +63,6 @@ class AgricultureReportService {
         stream.on('finish', resolve);
         stream.on('error', reject);
       });
-
-      console.log(`✅ Rapport généré: ${fileName}`);
 
       return {
         success: true,

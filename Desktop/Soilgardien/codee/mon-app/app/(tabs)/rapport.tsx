@@ -37,13 +37,11 @@ export default function RapportScreen() {
       }
 
       const analysisData = JSON.parse(params.data);
-      console.log('📄 Génération du PDF pour affichage...');
 
       // Générer le PDF
       const result = await reportService.generateReport(analysisData);
 
       if (result.success && result.uri) {
-        console.log('✅ PDF prêt à afficher:', result.uri);
         setPdfUri(result.uri);
       } else {
         throw new Error('Échec de la génération du PDF');
@@ -68,8 +66,6 @@ export default function RapportScreen() {
           dialogTitle: 'Télécharger ou partager le rapport',
           UTI: 'com.adobe.pdf'
         });
-
-        console.log('✅ Menu de téléchargement/partage ouvert');
       } else {
         Alert.alert('Info', 'Le téléchargement n\'est pas disponible sur cet appareil');
       }
@@ -87,7 +83,7 @@ export default function RapportScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/analyse')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Rapport PDF</Text>
@@ -104,7 +100,7 @@ export default function RapportScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/analyse')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Rapport PDF</Text>
@@ -125,7 +121,7 @@ export default function RapportScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/analyse')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Rapport PDF</Text>

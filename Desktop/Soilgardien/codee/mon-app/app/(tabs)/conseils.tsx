@@ -25,7 +25,6 @@ export default function ConseilsScreen() {
       if (params.data) {
         try {
           const data = JSON.parse(params.data);
-          console.log('💡 Données pour conseils:', data);
           setAnalysisData(data);
 
           // Récupérer le type d'utilisateur depuis les données
@@ -115,7 +114,7 @@ export default function ConseilsScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/analyse')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
           <Text style={styles.backText}>Retour</Text>
         </TouchableOpacity>
